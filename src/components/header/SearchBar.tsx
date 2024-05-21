@@ -17,6 +17,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Avatar, Button, Container } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -58,7 +59,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
 }));
 
-const HeaderBar = () => {
+const SearchBar = () => {
+	const router = useRouter();
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
 		React.useState<null | HTMLElement>(null);
@@ -81,6 +83,10 @@ const HeaderBar = () => {
 
 	const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setMobileMoreAnchorEl(event.currentTarget);
+	};
+
+	const handleNavigation = (url: string) => {
+		router.push(url);
 	};
 
 	const menuId = "primary-search-account-menu";
@@ -185,7 +191,11 @@ const HeaderBar = () => {
 							variant="h6"
 							noWrap
 							component="div"
-							sx={{ display: { xs: "none", sm: "block" } }}
+							sx={{
+								display: { xs: "none", sm: "block" },
+								cursor: "pointer",
+							}}
+							onClick={() => handleNavigation("/")}
 						>
 							SoundCloud
 						</Typography>
@@ -212,6 +222,7 @@ const HeaderBar = () => {
 								size="large"
 								aria-label="show 4 new mails"
 								color="inherit"
+								href="/like"
 							>
 								Likes
 							</Button>
@@ -245,4 +256,4 @@ const HeaderBar = () => {
 	);
 };
 
-export default HeaderBar;
+export default SearchBar;
