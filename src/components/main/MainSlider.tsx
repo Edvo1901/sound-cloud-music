@@ -89,7 +89,7 @@ const MainSlider = (props: IProps) => {
 			<Slider {...settings}>
 				{data.map((track) => {
 					return (
-						<div className="track">
+						<div className="track" key={track._id}>
 							<img
 								src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
 							/>
