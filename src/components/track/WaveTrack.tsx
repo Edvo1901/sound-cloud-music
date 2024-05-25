@@ -80,14 +80,16 @@ const WaveTrack = () => {
 		return `${minutes}:${paddedSeconds}`;
 	};
 
-
-
 	useEffect(() => {
 		if (!ws) return;
 		setIsPlaying(false);
 
 		const timeEl = document.querySelector("#time")!;
 		const durationEl = document.querySelector("#duration")!;
+		const hover = document.querySelector("#hover")
+		const waveForm = containerRef.current;
+		//@ts-ignore
+		waveForm?.addEventListener("pointermove", (e) => (hover.style.width = `${e.offsetX}px`))
 
 		const subscriptions = [
 			ws?.on("play", () => setIsPlaying(true)),
@@ -118,6 +120,7 @@ const WaveTrack = () => {
 				Wave
 				<div id="time">0:00</div>
 				<div id="duration">0:00</div>
+				<div id="hover"></div>
 			</div>
 
 			<button onClick={() => onPlayClick()}>
