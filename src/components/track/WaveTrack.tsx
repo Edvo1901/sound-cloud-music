@@ -1,18 +1,22 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useRef } from 'react'
 import WaveSurfer from 'wavesurfer.js'
 
 const WaveTrack = () => {
+	const containerRef = useRef<HTMLDivElement>(null)
+	const searchParams = useSearchParams()
+	const fileName = searchParams.get("audio")
 
 	useEffect(() => {
-		const htmlElement = document.getElementById("track-container")
+		const htmlElement = containerRef.current
 		if (!htmlElement) return
 		const wavesurfer = WaveSurfer.create({
 			container: htmlElement,
 			waveColor: 'rgb(200, 0, 200)',
 			progressColor: 'rgb(100, 0, 100)',
-			url: '/audio/maybeSound.mp3',
+			url: `/api?audio=${fileName}`,
 		  })
 
 		  wavesurfer.on('click', () => {
@@ -21,7 +25,7 @@ const WaveTrack = () => {
 	}, [])
 
 	return (
-		<div id="track-container">
+		<div ref={containerRef}>
 			Wave
 		</div>
 	)
