@@ -18,7 +18,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { Avatar, Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -119,7 +119,14 @@ const SearchBar = () => {
 					Profile
 				</Link>
 			</MenuItem>
-			<MenuItem>Logout</MenuItem>
+			<MenuItem
+				onClick={() => {
+					handleMenuClose();
+					signOut();
+				}}
+			>
+				Logout
+			</MenuItem>
 		</Menu>
 	);
 
@@ -251,7 +258,7 @@ const SearchBar = () => {
 									size="large"
 									aria-label="show 4 new mails"
 									color="inherit"
-									href="/api/auth/signin"
+									onClick={() => signIn()}
 								>
 									Sign in
 								</Button>
