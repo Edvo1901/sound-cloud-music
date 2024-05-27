@@ -1,6 +1,8 @@
 import AppFooter from "@/components/footer/AppFooter";
 import SearchBar from "@/components/header/SearchBar";
 import ThemeRegistry from "@/components/theme-registry/theme.registry";
+import NextAuthProvider from "@/lib/NextAuthProvider";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({
 	children,
@@ -11,9 +13,11 @@ export default function RootLayout({
 		<html lang="en">
 			<body>
 				<ThemeRegistry>
-					<SearchBar />
-					{children}
-					<AppFooter />
+					<NextAuthProvider>
+						<SearchBar />
+						{children}
+						<AppFooter />
+					</NextAuthProvider>
 				</ThemeRegistry>
 			</body>
 		</html>

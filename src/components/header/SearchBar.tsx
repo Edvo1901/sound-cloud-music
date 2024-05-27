@@ -18,6 +18,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { Avatar, Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -67,6 +68,7 @@ const SearchBar = () => {
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+	const { data: session } = useSession();
 
 	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -209,32 +211,53 @@ const SearchBar = () => {
 							/>
 						</Search>
 						<Box sx={{ flexGrow: 1 }} />
-						<Box sx={{ display: { xs: "none", md: "flex" } }}>
-							<Button
-								size="large"
-								aria-label="show 4 new mails"
-								color="inherit"
-								href="/playlist"
-							>
-								Playlist
-							</Button>
-							<Button
-								size="large"
-								aria-label="show 4 new mails"
-								color="inherit"
-								href="/like"
-							>
-								Likes
-							</Button>
-							<Button
-								size="large"
-								aria-label="show 4 new mails"
-								color="inherit"
-							>
-								Upload
-							</Button>
-							<Avatar onClick={handleProfileMenuOpen}>MB</Avatar>
-						</Box>
+						{session ? (
+							<>
+								<Box
+									sx={{ display: { xs: "none", md: "flex" } }}
+								>
+									<Button
+										size="large"
+										aria-label="show 4 new mails"
+										color="inherit"
+										href="/playlist"
+									>
+										Playlist
+									</Button>
+									<Button
+										size="large"
+										aria-label="show 4 new mails"
+										color="inherit"
+										href="/like"
+									>
+										Likes
+									</Button>
+									<Button
+										size="large"
+										aria-label="show 4 new mails"
+										color="inherit"
+									>
+										Upload
+									</Button>
+									<Avatar onClick={handleProfileMenuOpen}>
+										MB
+									</Avatar>
+								</Box>
+							</>
+						) : (
+							<>
+								{" "}
+								<Button
+									size="large"
+									aria-label="show 4 new mails"
+									color="inherit"
+									href="/api/auth/signin"
+								>
+									Sign in
+								</Button>
+							</>
+						)}
+
 						<Box sx={{ display: { xs: "flex", md: "none" } }}>
 							<IconButton
 								size="large"
