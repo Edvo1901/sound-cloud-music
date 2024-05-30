@@ -7,6 +7,9 @@ import { sendRequest } from "@/utils/API";
 
 export const authOptions: AuthOptions = {
 	secret: process.env.NO_SECRET,
+	pages: {
+		signIn: "/auth/signin"
+	},
 	// Configure one or more authentication providers
 	providers: [
 		GithubProvider({

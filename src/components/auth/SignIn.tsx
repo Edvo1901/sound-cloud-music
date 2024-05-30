@@ -11,6 +11,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import LockIcon from "@mui/icons-material/Lock";
+import { signIn } from "next-auth/react";
 
 const SignIn = () => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -150,6 +151,9 @@ const SignIn = () => {
 								sx={{
 									cursor: "pointer",
 									bgcolor: "orange",
+								}}
+								onClick={() => {
+									signIn("github")
 								}}
 							>
 								<GitHubIcon titleAccess="Login with Github" />
