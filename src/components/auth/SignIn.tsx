@@ -8,10 +8,11 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LockIcon from "@mui/icons-material/Lock";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { redirect, useRouter } from "next/navigation";
 
 const SignIn = () => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -24,7 +25,9 @@ const SignIn = () => {
 	const [errorUsername, setErrorUsername] = useState<string>("");
 	const [errorPassword, setErrorPassword] = useState<string>("");
 
-	const handleSubmit = () => {
+	const router = useRouter()
+
+	const handleSubmit = async () => {
 		setIsErrorUsername(false);
 		setIsErrorPassword(false);
 		setErrorUsername("");
@@ -40,7 +43,18 @@ const SignIn = () => {
 			setErrorPassword("Password is not empty.");
 			return;
 		}
-		console.log(">>> check username: ", username, " pass: ", password);
+
+		const res = await signIn("credentials", {
+			username,
+			password,
+			redirect: false
+		})
+
+		if (!res?.error) {
+			router.push("/")
+		} else {
+			alert(res.error)
+		}
 	};
 
 	return (
@@ -65,6 +79,9 @@ const SignIn = () => {
 					}}
 				>
 					<div style={{ margin: "20px" }}>
+						<Link href="/">
+							<ArrowBackIcon />
+						</Link>
 						<Box
 							sx={{
 								display: "flex",
