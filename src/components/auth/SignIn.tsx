@@ -116,6 +116,11 @@ const SignIn = () => {
 							onChange={(event) =>
 								setPassword(event.target.value)
 							}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									handleSubmit()
+								}
+							}}
 							variant="outlined"
 							margin="normal"
 							required
