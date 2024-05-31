@@ -258,7 +258,7 @@ const SearchBar = () => {
 									size="large"
 									aria-label="show 4 new mails"
 									color="inherit"
-									onClick={() => signIn()}
+									onClick={() => handleNavigation("/auth/signin")}
 								>
 									Sign in
 								</Button>
