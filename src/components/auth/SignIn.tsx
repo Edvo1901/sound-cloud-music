@@ -1,5 +1,14 @@
 "use client";
-import { Avatar, Box, Button, Divider, Grid, Typography } from "@mui/material";
+import {
+	Alert,
+	Avatar,
+	Box,
+	Button,
+	Divider,
+	Grid,
+	Snackbar,
+	Typography,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -25,7 +34,10 @@ const SignIn = () => {
 	const [errorUsername, setErrorUsername] = useState<string>("");
 	const [errorPassword, setErrorPassword] = useState<string>("");
 
-	const router = useRouter()
+	const [openMessage, setOpenMessage] = useState<boolean>(false);
+	const [resMessage, setResMessage] = useState<string>("");
+
+	const router = useRouter();
 
 	const handleSubmit = async () => {
 		setIsErrorUsername(false);
@@ -47,14 +59,26 @@ const SignIn = () => {
 		const res = await signIn("credentials", {
 			username,
 			password,
-			redirect: false
-		})
+			redirect: false,
+		});
 
 		if (!res?.error) {
-			router.push("/")
+			router.push("/");
 		} else {
-			alert(res.error)
+			setOpenMessage(true);
+			setResMessage(res.error);
 		}
+	};
+
+	const handleClose = (
+		event?: React.SyntheticEvent | Event,
+		reason?: string
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpenMessage(false);
 	};
 
 	return (
@@ -118,7 +142,7 @@ const SignIn = () => {
 							}
 							onKeyDown={(e) => {
 								if (e.key === "Enter") {
-									handleSubmit()
+									handleSubmit();
 								}
 							}}
 							variant="outlined"
@@ -175,7 +199,7 @@ const SignIn = () => {
 									bgcolor: "orange",
 								}}
 								onClick={() => {
-									signIn("github")
+									signIn("github");
 								}}
 							>
 								<GitHubIcon titleAccess="Login with Github" />
@@ -193,6 +217,17 @@ const SignIn = () => {
 					</div>
 				</Grid>
 			</Grid>
+
+			<Snackbar
+				open={openMessage}
+				autoHideDuration={3000}
+				anchorOrigin={{ vertical: "top", horizontal: "center" }}
+				onClose={handleClose}
+			>
+				<Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+					{resMessage}
+				</Alert>
+			</Snackbar>
 		</Box>
 	);
 };
