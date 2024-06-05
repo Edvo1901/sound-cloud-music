@@ -13,6 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { sendRequest } from "@/utils/API";
+import { useToast } from "@/utils/toast";
 
 function LinearProgressWithLabel(
 	props: LinearProgressProps & { value: number }
@@ -64,7 +65,8 @@ interface IProps {
 		fileName: string;
 		percent: number;
 		uploadedTrackName: string;
-	};
+	},
+	setValue: (v: number) => void
 }
 
 interface INewTrack {
@@ -76,7 +78,8 @@ interface INewTrack {
 }
 
 const Step2 = (props: IProps) => {
-	const { trackUpload } = props;
+	const { trackUpload, setValue } = props;
+	const toast = useToast();
 	const { data: session } = useSession<boolean>();
 	const [info, setInfo] = useState<INewTrack>({
 		title: "",
@@ -109,7 +112,7 @@ const Step2 = (props: IProps) => {
 				});
 			} catch (err) {
 				//@ts-ignore
-				alert(err?.response?.data);
+				toast.error(err?.response?.data?.message);
 			}
 		}
 	};
@@ -131,9 +134,10 @@ const Step2 = (props: IProps) => {
 		});
 
 		if (res.data) {
-			alert(res.message)
+			setValue(0)
+			toast.success(res.message);
 		} else {
-			alert(res.message)
+			toast.error(res.message);
 		}
 	};
 
