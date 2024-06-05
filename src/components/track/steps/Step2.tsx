@@ -56,25 +56,21 @@ const musicCategory = [
 	},
 ];
 
-const Step2 = () => {
-	const [progress, setProgress] = useState<number>(10);
+interface IProps {
+	trackUpload: {
+		fileName: string;
+		percent: number;
+	};
+}
 
-	useEffect(() => {
-		const timer = setInterval(() => {
-			setProgress((prevProgress) =>
-				prevProgress >= 100 ? 10 : prevProgress + 10
-			);
-		}, 800);
-		return () => {
-			clearInterval(timer);
-		};
-	}, []);
+const Step2 = (props: IProps) => {
+	const { trackUpload } = props;
 
 	return (
 		<div>
-			<div>Your uploading track</div>
+			<div>{trackUpload.fileName}</div>
 			<Box sx={{ width: "100%" }}>
-				<LinearProgressWithLabel value={progress} />
+				<LinearProgressWithLabel value={trackUpload.percent} />
 			</Box>
 			<Box sx={{ flexGrow: 1 }}>
 				<Grid container spacing={2}>
@@ -87,7 +83,7 @@ const Step2 = () => {
 							justifyContent: "center",
 							alignItems: "center",
 							flexDirection: "column",
-							gap: "10px"
+							gap: "10px",
 						}}
 					>
 						<div

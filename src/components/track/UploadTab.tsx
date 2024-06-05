@@ -1,11 +1,11 @@
 "use client";
-import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Step1 from "./steps/Step1";
 import Step2 from "./steps/Step2";
+import { SyntheticEvent, useState } from "react";
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -40,10 +40,19 @@ function a11yProps(index: number) {
 	};
 }
 
-const UploadTab = () => {
-	const [value, setValue] = React.useState(0);
+interface ITrackUpload {
+	fileName: string,
+	percent: number
+}
 
-	const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+const UploadTab = () => {
+	const [value, setValue] = useState<number>(0);
+	const [trackUpload, setTrackUpload] = useState<ITrackUpload>({
+		fileName: "",
+		percent: 0
+	})
+
+	const handleChange = (event: SyntheticEvent, newValue: number) => {
 		setValue(newValue);
 	};
 
@@ -60,10 +69,10 @@ const UploadTab = () => {
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				<Step1 />
+				<Step1 setValue={setValue} setTrackUpload={setTrackUpload}/>
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
-				<Step2 />
+				<Step2 trackUpload={trackUpload}/>
 			</CustomTabPanel>
 		</Box>
 	);
