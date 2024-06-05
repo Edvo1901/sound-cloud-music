@@ -227,7 +227,7 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
-										href="/playlist"
+										onClick={() => handleNavigation("/playlist")}
 									>
 										Playlist
 									</Button>
@@ -235,7 +235,7 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
-										href="/like"
+										onClick={() => handleNavigation("/like")}
 									>
 										Likes
 									</Button>
@@ -243,6 +243,7 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
+										onClick={() => handleNavigation("/track/upload")}
 									>
 										Upload
 									</Button>

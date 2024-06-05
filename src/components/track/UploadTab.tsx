@@ -42,14 +42,16 @@ function a11yProps(index: number) {
 
 interface ITrackUpload {
 	fileName: string,
-	percent: number
+	percent: number,
+	uploadedTrackName: ""
 }
 
 const UploadTab = () => {
 	const [value, setValue] = useState<number>(0);
 	const [trackUpload, setTrackUpload] = useState<ITrackUpload>({
 		fileName: "",
-		percent: 0
+		percent: 0,
+		uploadedTrackName: ""
 	})
 
 	const handleChange = (event: SyntheticEvent, newValue: number) => {
@@ -69,7 +71,7 @@ const UploadTab = () => {
 				</Tabs>
 			</Box>
 			<CustomTabPanel value={value} index={0}>
-				<Step1 setValue={setValue} setTrackUpload={setTrackUpload}/>
+				<Step1 setValue={setValue} setTrackUpload={setTrackUpload} trackUpload={trackUpload}/>
 			</CustomTabPanel>
 			<CustomTabPanel value={value} index={1}>
 				<Step2 trackUpload={trackUpload}/>

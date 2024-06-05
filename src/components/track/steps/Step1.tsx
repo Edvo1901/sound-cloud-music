@@ -23,11 +23,12 @@ const VisuallyHiddenInput = styled("input")({
 
 interface IProps {
 	setValue: (v:number) => void;
-	setTrackUpload: any
+	setTrackUpload: any,
+	trackUpload: any
 }
 
 const Step1 = (props: IProps) => {
-	const {setValue, setTrackUpload} = props
+	const {setValue, setTrackUpload, trackUpload} = props
 	const [percent, setPercent] = useState<number>(0)
 	const { data: session } = useSession<boolean>();
 
@@ -57,7 +58,6 @@ const Step1 = (props: IProps) => {
 							headers: {
 								Authorization: `Bearer ${session?.access_token}`,
 								target_type: "tracks",
-								delay: 5000
 							},
 							onUploadProgress: (progressEvent) => {
 
@@ -67,12 +67,17 @@ const Step1 = (props: IProps) => {
 								);
 								setPercent(percentCompleted)
 								setTrackUpload({
+									...trackUpload,
 									fileName: acceptedFiles[0].name,
 									percent: percentCompleted
 								})
 							},
 						}
 					);
+					setTrackUpload((prevState: any) => ({
+						...prevState,
+						uploadedTrackName: res.data.data.fileName
+					}))
 				} catch (err) {
 					//@ts-ignore
 					alert(err?.response?.data);

@@ -10,6 +10,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { sendRequest } from "@/utils/API";
 
 function LinearProgressWithLabel(
 	props: LinearProgressProps & { value: number }
@@ -43,15 +46,15 @@ const VisuallyHiddenInput = styled("input")({
 
 const musicCategory = [
 	{
-		value: "chillMusic",
+		value: "CHILL",
 		label: "CHILL",
 	},
 	{
-		value: "workoutMusic",
+		value: "WORKOUT",
 		label: "WORKOUT",
 	},
 	{
-		value: "partyMusic",
+		value: "PARTY",
 		label: "PARTY",
 	},
 ];
@@ -60,11 +63,88 @@ interface IProps {
 	trackUpload: {
 		fileName: string;
 		percent: number;
+		uploadedTrackName: string;
 	};
+}
+
+interface INewTrack {
+	title: string;
+	description: string;
+	trackUrl: string;
+	imageUrl: string;
+	category: string;
 }
 
 const Step2 = (props: IProps) => {
 	const { trackUpload } = props;
+	const { data: session } = useSession<boolean>();
+	const [info, setInfo] = useState<INewTrack>({
+		title: "",
+		description: "",
+		trackUrl: "",
+		imageUrl: "",
+		category: "",
+	});
+
+	const handleImageFileUpload = async (e: React.SyntheticEvent | Event) => {
+		const event = e.target as HTMLInputElement;
+		if (event.files) {
+			const formData = new FormData();
+			formData.append("fileUpload", event.files[0]);
+
+			try {
+				const res = await axios.post(
+					"http://localhost:8000/api/v1/files/upload",
+					formData,
+					{
+						headers: {
+							Authorization: `Bearer ${session?.access_token}`,
+							target_type: "images",
+						},
+					}
+				);
+				setInfo({
+					...info,
+					imageUrl: res.data.data.fileName,
+				});
+			} catch (err) {
+				//@ts-ignore
+				alert(err?.response?.data);
+			}
+		}
+	};
+
+	const handleSubmitForm = async () => {
+		const res = await sendRequest<IBackendRes<ITrackTop[]>>({
+			url: "http://localhost:8000/api/v1/tracks",
+			headers: {
+				Authorization: `Bearer ${session?.access_token}`,
+			},
+			method: "POST",
+			body: {
+				title: info.title,
+				description: info.description,
+				trackUrl: info.trackUrl,
+				imgUrl: info.imageUrl,
+				category: info.category,
+			},
+		});
+
+		if (res.data) {
+			alert(res.message)
+		} else {
+			alert(res.message)
+		}
+	};
+
+	useEffect(() => {
+		if (trackUpload && trackUpload.uploadedTrackName) {
+			setInfo({
+				...info,
+				trackUrl: trackUpload.uploadedTrackName,
+			});
+		}
+	}, [trackUpload]);
 
 	return (
 		<div>
@@ -93,7 +173,15 @@ const Step2 = (props: IProps) => {
 								background: "#ccc",
 							}}
 						>
-							<div></div>
+							<div>
+								{info.imageUrl && (
+									<img
+										height={250}
+										width={250}
+										src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imageUrl}`}
+									/>
+								)}
+							</div>
 						</div>
 						<Button
 							component="label"
@@ -101,7 +189,7 @@ const Step2 = (props: IProps) => {
 							variant="contained"
 							tabIndex={-1}
 							startIcon={<CloudUploadIcon />}
-							onClick={(e) => e.preventDefault()}
+							onChange={(e) => handleImageFileUpload(e)}
 						>
 							Upload file
 							<VisuallyHiddenInput type="file" />
@@ -117,24 +205,42 @@ const Step2 = (props: IProps) => {
 							autoComplete="off"
 						>
 							<TextField
-								id="title-input"
+								value={info?.title}
+								onChange={(e) =>
+									setInfo({
+										...info,
+										title: e.target.value,
+									})
+								}
 								label="Title"
 								variant="standard"
 								fullWidth
 								margin="dense"
 							/>
 							<TextField
-								id="description-input"
+								value={info.description}
+								onChange={(e) =>
+									setInfo({
+										...info,
+										description: e.target.value,
+									})
+								}
 								label="Description"
 								variant="standard"
 								fullWidth
 								margin="dense"
 							/>
 							<TextField
-								id="music-category"
+								value={info.category}
+								onChange={(e) =>
+									setInfo({
+										...info,
+										category: e.target.value,
+									})
+								}
 								select
 								label="Category"
-								defaultValue="chillMusic"
+								defaultValue="CHILL"
 								helperText="Please select your music category"
 								variant="standard"
 								fullWidth
@@ -149,7 +255,12 @@ const Step2 = (props: IProps) => {
 									</MenuItem>
 								))}
 							</TextField>
-							<Button variant="outlined">Save</Button>
+							<Button
+								variant="outlined"
+								onClick={() => handleSubmitForm()}
+							>
+								Save
+							</Button>
 						</Box>
 					</Grid>
 				</Grid>
