@@ -59,7 +59,7 @@ const UploadTab = () => {
 	};
 
 	return (
-		<Box sx={{ width: "100%", border: "1px solid #ccc" }}>
+		<Box sx={{ width: "100%", border: "1px solid #ccc", my: 5 }}>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs
 					value={value}
