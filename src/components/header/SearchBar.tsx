@@ -110,7 +110,7 @@ const SearchBar = () => {
 		>
 			<MenuItem>
 				<Link
-					href={"/profile"}
+					href={`/profile/${session?.user._id}`}
 					style={{
 						color: "unset",
 						textDecoration: "unset",
