@@ -9,14 +9,23 @@ import PauseIcon from "@mui/icons-material/Pause";
 import "./WaveTrack.scss";
 import { relative } from "path";
 import { Tooltip } from "@mui/material";
+import { sendRequest } from "@/utils/API";
+import { useTrackContext } from "@/lib/TrackWrapper";
 
-const WaveTrack = () => {
+interface IProps {
+	track: ITrackTop | null;
+}
+
+const WaveTrack = (props: IProps) => {
+	const { track } = props;
 	const containerRef = useRef<HTMLDivElement>(null);
 	const hoverRef = useRef<HTMLDivElement>(null);
 	const searchParams = useSearchParams();
 	const fileName = searchParams.get("audio");
 	const [time, setTime] = useState<string>("0:00");
 	const [duration, setDuration] = useState<string>("0:00");
+	const { currentTrack, setCurrentTrack } =
+		useTrackContext() as ITrackContext;
 
 	const optionMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
 		const canvas = document.createElement("canvas")!;
@@ -127,6 +136,24 @@ const WaveTrack = () => {
 		}
 	}, [ws]);
 
+	useEffect(() => {
+		if (track?._id === currentTrack._id && ws) {
+			currentTrack.isPlaying ? ws.pause() : ws.play();
+		}
+	}, [currentTrack]);
+
+	useEffect(() => {
+		if (ws && currentTrack.isPlaying) {
+			ws.pause()
+		}
+	}, [currentTrack]);
+
+	useEffect(() => {
+		if (track?._id && !currentTrack._id) {
+			setCurrentTrack({...track, isPlaying: false})
+		}
+	}, [track]);
+
 	const arrComments = [
 		{
 			id: 1,
@@ -182,7 +209,14 @@ const WaveTrack = () => {
 					<div className="info" style={{ display: "flex" }}>
 						<div>
 							<div
-								onClick={() => onPlayClick()}
+								onClick={() => {
+									onPlayClick();
+									if (track && ws)
+										setCurrentTrack({
+											...currentTrack,
+											isPlaying: false,
+										});
+								}}
 								style={{
 									borderRadius: "50%",
 									background: "#f50",
@@ -215,7 +249,7 @@ const WaveTrack = () => {
 									color: "white",
 								}}
 							>
-								This is a song
+								{track?.title}
 							</div>
 							<div
 								style={{
@@ -227,7 +261,7 @@ const WaveTrack = () => {
 									color: "white",
 								}}
 							>
-								Good song
+								{track?.description}
 							</div>
 						</div>
 					</div>
@@ -251,14 +285,19 @@ const WaveTrack = () => {
 						>
 							{arrComments.map((item) => {
 								return (
-									<Tooltip title={item.content} arrow={true}>
+									<Tooltip
+										title={item.content}
+										arrow={true}
+										key={item.id}
+									>
 										<img
 											onPointerMove={(e) => {
 												const hover = hoverRef.current!;
 
-												hover.style.width = calAvtPosition(
-													item.moment + 3
-												);
+												hover.style.width =
+													calAvtPosition(
+														item.moment + 3
+													);
 											}}
 											key={item.id}
 											style={{
