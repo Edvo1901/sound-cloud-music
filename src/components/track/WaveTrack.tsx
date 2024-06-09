@@ -18,21 +18,20 @@ interface IProps {
 
 const WaveTrack = (props: IProps) => {
 	const { track } = props;
-	const containerRef = useRef<HTMLDivElement>(null);
-	const hoverRef = useRef<HTMLDivElement>(null);
 	const searchParams = useSearchParams();
 	const fileName = searchParams.get("audio");
+	const containerRef = useRef<HTMLDivElement>(null);
+	const hoverRef = useRef<HTMLDivElement>(null);
 	const [time, setTime] = useState<string>("0:00");
 	const [duration, setDuration] = useState<string>("0:00");
 	const { currentTrack, setCurrentTrack } =
 		useTrackContext() as ITrackContext;
 
 	const optionMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
-		const canvas = document.createElement("canvas")!;
-		const ctx = canvas.getContext("2d")!;
 		let gradient, progressGradient;
-
 		if (typeof window !== "undefined") {
+			const canvas = document.createElement("canvas");
+			const ctx = canvas.getContext("2d")!;
 			// Define the waveform gradient
 			gradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 1.35);
 			gradient.addColorStop(0, "#656666"); // Top color
@@ -83,9 +82,9 @@ const WaveTrack = (props: IProps) => {
 
 		return {
 			waveColor: gradient,
-			progressColor: "orange",
-			barWidth: 3,
+			progressColor: progressGradient,
 			height: 100,
+			barWidth: 3,
 			url: `/api?audio=${fileName}`,
 		};
 	}, []);
@@ -106,53 +105,36 @@ const WaveTrack = (props: IProps) => {
 
 		const hover = hoverRef.current!;
 		const waveForm = containerRef.current!;
-		//@ts-ignore
-		waveForm?.addEventListener(
+		waveForm.addEventListener(
 			"pointermove",
 			(e) => (hover.style.width = `${e.offsetX}px`)
 		);
 
 		const subscriptions = [
-			ws?.on("play", () => setIsPlaying(true)),
-			ws?.on("pause", () => setIsPlaying(false)),
-			ws?.on("decode", (duration) => {
+			ws.on("play", () => setIsPlaying(true)),
+			ws.on("pause", () => setIsPlaying(false)),
+			ws.on("decode", (duration) => {
 				setDuration(formatTime(duration));
 			}),
-			ws?.on("timeupdate", (currentTime) => {
+			ws.on("timeupdate", (currentTime) => {
 				setTime(formatTime(currentTime));
 			}),
-			// ws?.once("interaction", () => {
-			// 	ws.play()
-			// })
+			ws.once("interaction", () => {
+				ws.play();
+			}),
 		];
+
 		return () => {
 			subscriptions.forEach((unsub) => unsub());
 		};
 	}, [ws]);
 
+	// On play button click
 	const onPlayClick = useCallback(() => {
 		if (ws) {
 			ws.isPlaying() ? ws.pause() : ws.play();
 		}
 	}, [ws]);
-
-	useEffect(() => {
-		if (track?._id === currentTrack._id && ws) {
-			currentTrack.isPlaying ? ws.pause() : ws.play();
-		}
-	}, [currentTrack]);
-
-	useEffect(() => {
-		if (ws && currentTrack.isPlaying) {
-			ws.pause()
-		}
-	}, [currentTrack]);
-
-	useEffect(() => {
-		if (track?._id && !currentTrack._id) {
-			setCurrentTrack({...track, isPlaying: false})
-		}
-	}, [track]);
 
 	const arrComments = [
 		{
@@ -178,14 +160,25 @@ const WaveTrack = (props: IProps) => {
 		},
 	];
 
-	const calAvtPosition = (moment: number) => {
-		const defaultDuration = 199;
-		const percent = (moment / defaultDuration) * 100;
+	const calLeft = (moment: number) => {
+		const hardCodeDuration = 199;
+		const percent = (moment / hardCodeDuration) * 100;
 		return `${percent}%`;
 	};
 
+	useEffect(() => {
+		if (ws && currentTrack.isPlaying) {
+			ws.pause();
+		}
+	}, [currentTrack]);
+
+	useEffect(() => {
+		if (track?._id && !currentTrack?._id)
+			setCurrentTrack({ ...track, isPlaying: false });
+	}, [track]);
+
 	return (
-		<div className="wave-track-container">
+		<div style={{ marginTop: 20 }}>
 			<div
 				style={{
 					display: "flex",
@@ -211,11 +204,12 @@ const WaveTrack = (props: IProps) => {
 							<div
 								onClick={() => {
 									onPlayClick();
-									if (track && ws)
+									if (track && ws) {
 										setCurrentTrack({
 											...currentTrack,
 											isPlaying: false,
 										});
+									}
 								}}
 								style={{
 									borderRadius: "50%",
@@ -276,6 +270,7 @@ const WaveTrack = (props: IProps) => {
 								height: "30px",
 								width: "100%",
 								bottom: "0",
+								// background: "#ccc"
 								backdropFilter: "brightness(0.5)",
 							}}
 						></div>
@@ -287,17 +282,15 @@ const WaveTrack = (props: IProps) => {
 								return (
 									<Tooltip
 										title={item.content}
-										arrow={true}
+										arrow
 										key={item.id}
 									>
 										<img
 											onPointerMove={(e) => {
 												const hover = hoverRef.current!;
-
-												hover.style.width =
-													calAvtPosition(
-														item.moment + 3
-													);
+												hover.style.width = calLeft(
+													item.moment
+												);
 											}}
 											key={item.id}
 											style={{
@@ -306,9 +299,7 @@ const WaveTrack = (props: IProps) => {
 												position: "absolute",
 												top: 71,
 												zIndex: 20,
-												left: calAvtPosition(
-													item.moment
-												),
+												left: calLeft(item.moment),
 											}}
 											src={`http://localhost:8000/images/chill1.png`}
 										/>
