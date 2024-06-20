@@ -19,6 +19,7 @@ import { Avatar, Button, Container } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { fetchDefaultImage } from "@/utils/API";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -247,9 +248,15 @@ const SearchBar = () => {
 									>
 										Upload
 									</Button>
-									<Avatar onClick={handleProfileMenuOpen}>
-										MB
-									</Avatar>
+									<img
+										onClick={handleProfileMenuOpen}
+										style={{
+											height: 35,
+											width: 35,
+											cursor: "pointer"
+										}}
+										src={fetchDefaultImage(session.user.type)}
+									/>
 								</Box>
 							</>
 						) : (

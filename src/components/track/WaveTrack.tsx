@@ -9,15 +9,17 @@ import PauseIcon from "@mui/icons-material/Pause";
 import "./WaveTrack.scss";
 import { relative } from "path";
 import { Tooltip } from "@mui/material";
-import { sendRequest } from "@/utils/API";
+import { fetchDefaultImage, sendRequest } from "@/utils/API";
 import { useTrackContext } from "@/lib/TrackWrapper";
+import CommentTrack from "./CommentTrack";
 
 interface IProps {
 	track: ITrackTop | null;
+	commentList: IComments[];
 }
 
 const WaveTrack = (props: IProps) => {
-	const { track } = props;
+	const { track, commentList } = props;
 	const searchParams = useSearchParams();
 	const fileName = searchParams.get("audio");
 	const containerRef = useRef<HTMLDivElement>(null);
@@ -135,30 +137,6 @@ const WaveTrack = (props: IProps) => {
 			ws.isPlaying() ? ws.pause() : ws.play();
 		}
 	}, [ws]);
-
-	const arrComments = [
-		{
-			id: 1,
-			avatar: "http://localhost:8000/images/chill1.png",
-			moment: 10,
-			user: "username 1",
-			content: "just a comment1",
-		},
-		{
-			id: 2,
-			avatar: "http://localhost:8000/images/chill1.png",
-			moment: 30,
-			user: "username 2",
-			content: "just a comment3",
-		},
-		{
-			id: 3,
-			avatar: "http://localhost:8000/images/chill1.png",
-			moment: 50,
-			user: "username 3",
-			content: "just a comment3",
-		},
-	];
 
 	const calLeft = (moment: number) => {
 		const hardCodeDuration = 199;
@@ -278,12 +256,12 @@ const WaveTrack = (props: IProps) => {
 							className="comments"
 							style={{ position: "relative" }}
 						>
-							{arrComments.map((item) => {
+							{commentList.map((item) => {
 								return (
 									<Tooltip
 										title={item.content}
 										arrow
-										key={item.id}
+										key={item._id}
 									>
 										<img
 											onPointerMove={(e) => {
@@ -292,7 +270,7 @@ const WaveTrack = (props: IProps) => {
 													item.moment
 												);
 											}}
-											key={item.id}
+											key={item._id}
 											style={{
 												height: 20,
 												width: 20,
@@ -301,7 +279,7 @@ const WaveTrack = (props: IProps) => {
 												zIndex: 20,
 												left: calLeft(item.moment),
 											}}
-											src={`http://localhost:8000/images/chill1.png`}
+											src={fetchDefaultImage(item.user.type)}
 										/>
 									</Tooltip>
 								);
@@ -318,15 +296,31 @@ const WaveTrack = (props: IProps) => {
 						alignItems: "center",
 					}}
 				>
-					<div
-						style={{
-							background: "#ccc",
-							width: 250,
-							height: 250,
-						}}
-					></div>
+					{track?.imgUrl ? (
+						<img
+							src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
+							style={{
+								width: 250,
+								height: 250,
+							}}
+						/>
+					) : (
+						<div
+							style={{
+								background: "#ccc",
+								width: 250,
+								height: 250,
+							}}
+						></div>
+					)}
 				</div>
 			</div>
+			<div>
+                <CommentTrack
+                    comments={commentList}
+                    track={track}
+                />
+            </div>
 		</div>
 	);
 };

@@ -10,6 +10,7 @@ export default function RootLayout({
 		<>
 			<SearchBar />
 			{children}
+			<div style={{marginBottom: "100px"}}></div>
 			<AppFooter />
 		</>
 	);
