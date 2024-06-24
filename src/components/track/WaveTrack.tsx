@@ -7,11 +7,12 @@ import { WaveSurferOptions } from "wavesurfer.js";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import "./WaveTrack.scss";
-import { relative } from "path";
 import { Tooltip } from "@mui/material";
 import { fetchDefaultImage, sendRequest } from "@/utils/API";
 import { useTrackContext } from "@/lib/TrackWrapper";
 import CommentTrack from "./CommentTrack";
+import LikeTrack from "./LikeTrack";
+import { useRouter } from "next/navigation";
 
 interface IProps {
 	track: ITrackTop | null;
@@ -28,6 +29,8 @@ const WaveTrack = (props: IProps) => {
 	const [duration, setDuration] = useState<string>("0:00");
 	const { currentTrack, setCurrentTrack } =
 		useTrackContext() as ITrackContext;
+	const router = useRouter();
+	const firstViewRef = useRef(true);
 
 	const optionMemo = useMemo((): Omit<WaveSurferOptions, "container"> => {
 		let gradient, progressGradient;
@@ -101,6 +104,21 @@ const WaveTrack = (props: IProps) => {
 		return `${minutes}:${paddedSeconds}`;
 	};
 
+	const handleIncreaseView = async () => {
+		if (firstViewRef.current) {
+			await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
+				url: `http://localhost:8000/api/v1/tracks/increase-view`,
+				method: "POST",
+				body: {
+					trackId: track?._id,
+				},
+			});
+
+			router.refresh();
+			firstViewRef.current = false;
+		}
+	};
+
 	useEffect(() => {
 		if (!ws) return;
 		setIsPlaying(false);
@@ -139,7 +157,7 @@ const WaveTrack = (props: IProps) => {
 	}, [ws]);
 
 	const calLeft = (moment: number) => {
-		const hardCodeDuration = 199;
+		const hardCodeDuration = ws?.getDuration() ?? 0;
 		const percent = (moment / hardCodeDuration) * 100;
 		return `${percent}%`;
 	};
@@ -182,6 +200,7 @@ const WaveTrack = (props: IProps) => {
 							<div
 								onClick={() => {
 									onPlayClick();
+									handleIncreaseView();
 									if (track && ws) {
 										setCurrentTrack({
 											...currentTrack,
@@ -279,7 +298,9 @@ const WaveTrack = (props: IProps) => {
 												zIndex: 20,
 												left: calLeft(item.moment),
 											}}
-											src={fetchDefaultImage(item.user.type)}
+											src={fetchDefaultImage(
+												item.user.type
+											)}
 										/>
 									</Tooltip>
 								);
@@ -316,11 +337,11 @@ const WaveTrack = (props: IProps) => {
 				</div>
 			</div>
 			<div>
-                <CommentTrack
-                    comments={commentList}
-                    track={track}
-                />
-            </div>
+				<LikeTrack track={track} />
+			</div>
+			<div>
+				<CommentTrack comments={commentList} track={track} ws={ws} />
+			</div>
 		</div>
 	);
 };
