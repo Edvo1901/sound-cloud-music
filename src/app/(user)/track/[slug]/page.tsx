@@ -11,24 +11,38 @@ export async function generateMetadata(
 	{ params }: Props,
 	parent: ResolvingMetadata
 ): Promise<Metadata> {
+	const temp = params.slug.split(".html")
+	const splitTemp = temp[0]?.split("-")
+	const id = splitTemp[splitTemp.length - 1]
+
 	// fetch data
 	const res = await sendRequest<IBackendRes<ITrackTop>>({
-		url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+		url: `http://localhost:8000/api/v1/tracks/${id}`,
 		method: "GET",
 		nextOption: { cache: "no-store" },
 	});
 
 	return {
 		title: res.data?.title,
-		description: res.data?.description
+		description: res.data?.description,
+		openGraph: {
+			title: "Website music",
+			description: "Clone from Sound cloud",
+			type: "website",
+			images: [`https://raw.githubusercontent.com/haryphamdev/sharing-host-files/master/detail-doctors/a1.jpg`]
+		}
 	};
 }
 
 const DetailTrackPage = async (props: any) => {
 	const { params } = props;
 
+	const temp = params.slug.split(".html")
+	const splitTemp = temp[0]?.split("-")
+	const id = splitTemp[splitTemp.length - 1]
+
 	const res = await sendRequest<IBackendRes<ITrackTop>>({
-		url: `http://localhost:8000/api/v1/tracks/${params.slug}`,
+		url: `http://localhost:8000/api/v1/tracks/${id}`,
 		method: "GET",
 		nextOption: { cache: "no-store" },
 	});

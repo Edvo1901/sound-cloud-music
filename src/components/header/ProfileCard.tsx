@@ -14,6 +14,7 @@ import { useTrackContext } from "@/lib/TrackWrapper";
 import { useState } from "react";
 import PauseIcon from "@mui/icons-material/Pause";
 import Link from "next/link";
+import { convertSlugUrl } from "@/utils/API";
 
 interface IProps {
 	data: ITrackTop;
@@ -30,7 +31,7 @@ const ProfileCard = (props: IProps) => {
 			<Box sx={{ display: "flex", flexDirection: "column" }}>
 				<CardContent sx={{ flex: "1 0 auto" }}>
 					<Link
-						href={`/track/${data._id}?audio=${data.trackUrl}&id=${data._id}`}
+						href={`/track/${convertSlugUrl(data.title)}-${data._id}.html?audio=${data.trackUrl}`}
 						style={{ textDecoration: "none", color: "unset" }}
 					>
 						<Typography component="div" variant="h5">
