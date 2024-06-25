@@ -32,7 +32,7 @@ export const authOptions: AuthOptions = {
 			},
 			async authorize(credentials, req) {
 				const res = await sendRequest<IBackendRes<JWT>>({
-					url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login",
+					url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login`,
 					method: "POST",
 					body: {
 						username: credentials?.username,
@@ -57,7 +57,7 @@ export const authOptions: AuthOptions = {
 				account?.provider.toLowerCase() !== "credentials"
 			) {
 				const res = await sendRequest<IBackendRes<JWT>>({
-					url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media",
+					url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
 					method: "POST",
 					body: { category: account?.provider.toLocaleUpperCase(), username: user.email },
 				});

@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 
 const ProfilePage = async ({ params }: { params: { slug: string } }) => {
 	const res = await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
-		url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/users?current=1&pageSize=10",
+		url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/users?current=1&pageSize=10`,
 		method: "POST",
 		body: { id: params.slug },
 	});
