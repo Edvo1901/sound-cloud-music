@@ -1,13 +1,13 @@
 "use client";
+import { sendRequestFile } from "@/utils/API";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useCallback, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";
 import "./Step1.scss";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { useCallback, useState } from "react";
-import { sendRequestFile } from "@/utils/API";
-import { useSession } from "next-auth/react";
-import axios from "axios";
 
 const VisuallyHiddenInput = styled("input")({
 	clip: "rect(0 0 0 0)",
@@ -41,7 +41,7 @@ const Step1 = (props: IProps) => {
 				formData.append("fileUpload", audio);
 
 				// const chillMusic = await sendRequestFile<IBackendRes<ITrackTop[]>>({
-				// 	url: "http://localhost:8000/api/v1/files/upload",
+				// 	url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload",
 				// 	headers: {
 				// 		"Authorization": `Bearer ${session?.access_token}`,
 				// 		"target_type": "tracks"
@@ -52,7 +52,7 @@ const Step1 = (props: IProps) => {
 
 				try {
 					const res = await axios.post(
-						"http://localhost:8000/api/v1/files/upload",
+						`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload`,
 						formData,
 						{
 							headers: {

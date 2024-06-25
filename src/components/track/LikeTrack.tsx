@@ -1,10 +1,10 @@
-import Chip from '@mui/material/Chip';
+import { sendRequest } from '@/utils/API';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { useEffect, useState } from 'react';
-import { sendRequest } from '@/utils/API';
+import Chip from '@mui/material/Chip';
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
 
 
 interface IProps {
@@ -20,7 +20,7 @@ const LikeTrack = (props: IProps) => {
     const fetchData = async () => {
         if (session?.access_token) {
             const res2 = await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-                url: `http://localhost:8000/api/v1/likes`,
+                url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
                 method: "GET",
                 queryParams: {
                     current: 1,
@@ -41,7 +41,7 @@ const LikeTrack = (props: IProps) => {
 
     const handleLikeTrack = async () => {
         await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-            url: `http://localhost:8000/api/v1/likes`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/likes`,
             method: "POST",
             body: {
                 track: track?._id,

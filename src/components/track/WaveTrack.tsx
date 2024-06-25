@@ -1,19 +1,18 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useWaveSurfer } from "@/utils/CustomHook";
-import { WaveSurferOptions } from "wavesurfer.js";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
-import "./WaveTrack.scss";
-import { Tooltip } from "@mui/material";
-import { fetchDefaultImage, sendRequest } from "@/utils/API";
 import { useTrackContext } from "@/lib/TrackWrapper";
+import { fetchDefaultImage, sendRequest } from "@/utils/API";
+import { useWaveSurfer } from "@/utils/CustomHook";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { Tooltip } from "@mui/material";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { WaveSurferOptions } from "wavesurfer.js";
 import CommentTrack from "./CommentTrack";
 import LikeTrack from "./LikeTrack";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import "./WaveTrack.scss";
 
 interface IProps {
 	track: ITrackTop | null;
@@ -108,7 +107,7 @@ const WaveTrack = (props: IProps) => {
 	const handleIncreaseView = async () => {
 		if (firstViewRef.current) {
 			await sendRequest<IBackendRes<IModelPaginate<ITrackLike>>>({
-				url: `http://localhost:8000/api/v1/tracks/increase-view`,
+				url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/increase-view`,
 				method: "POST",
 				body: {
 					trackId: track?._id,

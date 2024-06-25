@@ -1,15 +1,15 @@
 "use client";
 import { fetchDefaultImage, sendRequest } from "@/utils/API";
+import { useHasMounted } from "@/utils/CustomHook";
 import { Box, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import WaveSurfer from "wavesurfer.js";
-import { useHasMounted } from "@/utils/CustomHook";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import WaveSurfer from "wavesurfer.js";
 dayjs.extend(relativeTime);
 
 interface IProps {
@@ -35,7 +35,7 @@ const CommentTrack = (props: IProps) => {
 
 	const handleSubmit = async () => {
 		const res = await sendRequest<IBackendRes<IComments>>({
-			url: `http://localhost:8000/api/v1/comments`,
+			url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/comments`,
 			method: "POST",
 			body: {
 				content: yourComment,

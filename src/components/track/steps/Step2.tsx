@@ -1,20 +1,20 @@
+import { sendRequest } from "@/utils/API";
+import { useToast } from "@/utils/toast";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import LinearProgress, {
 	LinearProgressProps,
 } from "@mui/material/LinearProgress";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import { useSession } from "next-auth/react";
+import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { sendRequest } from "@/utils/API";
-import { useToast } from "@/utils/toast";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 function LinearProgressWithLabel(
 	props: LinearProgressProps & { value: number }
@@ -98,7 +98,7 @@ const Step2 = (props: IProps) => {
 
 			try {
 				const res = await axios.post(
-					"http://localhost:8000/api/v1/files/upload",
+					`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/files/upload`,
 					formData,
 					{
 						headers: {
@@ -120,7 +120,7 @@ const Step2 = (props: IProps) => {
 
 	const handleSubmitForm = async () => {
 		const res = await sendRequest<IBackendRes<ITrackTop[]>>({
-			url: "http://localhost:8000/api/v1/tracks",
+			url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks`,
 			headers: {
 				Authorization: `Bearer ${session?.access_token}`,
 			},

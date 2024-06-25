@@ -1,26 +1,26 @@
-import MainSlider from "@/components/main/MainSlider";
-import { Container } from "@mui/material";
-import { sendRequest } from "@/utils/API";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import MainSlider from "@/components/main/MainSlider";
+import { sendRequest } from "@/utils/API";
+import { Container } from "@mui/material";
+import { getServerSession } from "next-auth";
 
 export default async function HomePage() {
 	const session = await getServerSession(authOptions)
 	//console.log(session)
 	const chillMusic = await sendRequest<IBackendRes<ITrackTop[]>>({
-		url: "http://localhost:8000/api/v1/tracks/top",
+		url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top",
 		method: "POST",
 		body: { category: "CHILL", limit: 10 },
 	});
 
 	const workoutMusic = await sendRequest<IBackendRes<ITrackTop[]>>({
-		url: "http://localhost:8000/api/v1/tracks/top",
+		url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top",
 		method: "POST",
 		body: { category: "WORKOUT", limit: 10 },
 	});
 
 	const partyMusic = await sendRequest<IBackendRes<ITrackTop[]>>({
-		url: "http://localhost:8000/api/v1/tracks/top",
+		url: "${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top",
 		method: "POST",
 		body: { category: "PARTY", limit: 10 },
 	});
