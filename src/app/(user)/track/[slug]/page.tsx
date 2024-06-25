@@ -2,6 +2,7 @@ import WaveTrack from "@/components/track/WaveTrack";
 import { sendRequest } from "@/utils/API";
 import { Container } from "@mui/material";
 import type { Metadata, ResolvingMetadata } from "next";
+import { notFound } from "next/navigation";
 
 type Props = {
 	params: { slug: string };
@@ -11,9 +12,9 @@ export async function generateMetadata(
 	{ params }: Props,
 	parent: ResolvingMetadata
 ): Promise<Metadata> {
-	const temp = params.slug.split(".html")
-	const splitTemp = temp[0]?.split("-")
-	const id = splitTemp[splitTemp.length - 1]
+	const temp = params.slug.split(".html");
+	const splitTemp = temp[0]?.split("-");
+	const id = splitTemp[splitTemp.length - 1];
 
 	// fetch data
 	const res = await sendRequest<IBackendRes<ITrackTop>>({
@@ -29,17 +30,19 @@ export async function generateMetadata(
 			title: "Website music",
 			description: "Clone from Sound cloud",
 			type: "website",
-			images: [`https://raw.githubusercontent.com/haryphamdev/sharing-host-files/master/detail-doctors/a1.jpg`]
-		}
+			images: [
+				`https://raw.githubusercontent.com/haryphamdev/sharing-host-files/master/detail-doctors/a1.jpg`,
+			],
+		},
 	};
 }
 
 const DetailTrackPage = async (props: any) => {
 	const { params } = props;
 
-	const temp = params.slug.split(".html")
-	const splitTemp = temp[0]?.split("-")
-	const id = splitTemp[splitTemp.length - 1]
+	const temp = params.slug.split(".html");
+	const splitTemp = temp[0]?.split("-");
+	const id = splitTemp[splitTemp.length - 1];
 
 	const res = await sendRequest<IBackendRes<ITrackTop>>({
 		url: `http://localhost:8000/api/v1/tracks/${id}`,
@@ -53,11 +56,13 @@ const DetailTrackPage = async (props: any) => {
 		queryParams: {
 			current: 1,
 			pageSize: 10,
-			trackId: params.slug,
+			trackId: id,
 			sort: "-createAt",
 		},
 	});
 
+	if (!res.data) return notFound();
+	await new Promise(resolve => setTimeout(resolve, 3000))
 	return (
 		<Container>
 			<div>
