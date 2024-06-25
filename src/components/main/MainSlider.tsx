@@ -10,6 +10,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Divider from "@mui/material/Divider";
 import Link from "next/link";
 import { convertSlugUrl } from "@/utils/API";
+import Image from "next/image";
 
 interface IProps {
 	data: ITrackTop[];
@@ -22,12 +23,12 @@ const MainSlider = (props: IProps) => {
 	const NextArrow = (props: any) => {
 		return (
 			<Button
-				variant="outlined"
+				variant="contained"
 				onClick={props.onClick}
 				sx={{
 					position: "absolute",
 					right: 0,
-					top: "50%",
+					top: "25%",
 					zIndex: 2,
 					minWidth: 30,
 					width: 35,
@@ -64,6 +65,32 @@ const MainSlider = (props: IProps) => {
 		slidesToScroll: 1,
 		nextArrow: <NextArrow />,
 		prevArrow: <PrevArrow />,
+		responsive: [
+			{
+				breakpoint: 1024,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 3,
+					infinite: true,
+					dots: true,
+				},
+			},
+			{
+				breakpoint: 600,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2,
+					initialSlide: 2,
+				},
+			},
+			{
+				breakpoint: 480,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1,
+				},
+			},
+		],
 	};
 
 	return (
@@ -91,10 +118,32 @@ const MainSlider = (props: IProps) => {
 				{data.map((track) => {
 					return (
 						<div className="track" key={track._id}>
-							<img
+							<div
+								className="img-logo"
+								style={{
+									position: "relative",
+									height: "150px",
+									width: "150px",
+								}}
+							>
+								{/* <img
 								src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
-							/>
-							<Link href={`/track/${convertSlugUrl(track.title)}-${track._id}.html?audio=${track.trackUrl}&id=${track._id}`}>
+							/> */}
+								<Image
+									src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${track.imgUrl}`}
+									alt="avatar image"
+									fill
+									style={{
+										objectFit: "contain",
+									}}
+								/>
+							</div>
+
+							<Link
+								href={`/track/${convertSlugUrl(track.title)}-${
+									track._id
+								}.html?audio=${track.trackUrl}&id=${track._id}`}
+							>
 								<h4>{track.title}</h4>
 							</Link>
 							<h5>{track.description}</h5>

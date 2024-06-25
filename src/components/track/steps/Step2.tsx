@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { sendRequest } from "@/utils/API";
 import { useToast } from "@/utils/toast";
+import Image from "next/image";
 
 function LinearProgressWithLabel(
 	props: LinearProgressProps & { value: number }
@@ -65,8 +66,8 @@ interface IProps {
 		fileName: string;
 		percent: number;
 		uploadedTrackName: string;
-	},
-	setValue: (v: number) => void
+	};
+	setValue: (v: number) => void;
 }
 
 interface INewTrack {
@@ -134,7 +135,7 @@ const Step2 = (props: IProps) => {
 		});
 
 		if (res.data) {
-			setValue(0)
+			setValue(0);
 			toast.success(res.message);
 		} else {
 			toast.error(res.message);
@@ -179,10 +180,11 @@ const Step2 = (props: IProps) => {
 						>
 							<div>
 								{info.imageUrl && (
-									<img
+									<Image
+										src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imageUrl}`}
 										height={250}
 										width={250}
-										src={`${process.env.NEXT_PUBLIC_BACKEND_URL}/images/${info.imageUrl}`}
+										alt="Step2"
 									/>
 								)}
 							</div>

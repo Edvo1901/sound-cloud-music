@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { fetchDefaultImage } from "@/utils/API";
+import Image from "next/image";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -228,7 +229,9 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
-										onClick={() => handleNavigation("/playlist")}
+										onClick={() =>
+											handleNavigation("/playlist")
+										}
 									>
 										Playlist
 									</Button>
@@ -236,7 +239,9 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
-										onClick={() => handleNavigation("/like")}
+										onClick={() =>
+											handleNavigation("/like")
+										}
 									>
 										Likes
 									</Button>
@@ -244,18 +249,20 @@ const SearchBar = () => {
 										size="large"
 										aria-label="show 4 new mails"
 										color="inherit"
-										onClick={() => handleNavigation("/track/upload")}
+										onClick={() =>
+											handleNavigation("/track/upload")
+										}
 									>
 										Upload
 									</Button>
-									<img
+									<Image
 										onClick={handleProfileMenuOpen}
-										style={{
-											height: 35,
-											width: 35,
-											cursor: "pointer"
-										}}
-										src={fetchDefaultImage(session.user.type)}
+										src={fetchDefaultImage(
+											session.user.type
+										)}
+										alt="avt"
+										height={35}
+										width={35}
 									/>
 								</Box>
 							</>
@@ -266,7 +273,9 @@ const SearchBar = () => {
 									size="large"
 									aria-label="show 4 new mails"
 									color="inherit"
-									onClick={() => handleNavigation("/auth/signin")}
+									onClick={() =>
+										handleNavigation("/auth/signin")
+									}
 								>
 									Sign in
 								</Button>
