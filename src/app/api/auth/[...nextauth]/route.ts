@@ -6,7 +6,7 @@ import { JWT } from "next-auth/jwt";
 import { sendRequest } from "@/utils/API";
 
 export const authOptions: AuthOptions = {
-	secret: process.env.NO_SECRET,
+	secret: process.env.NEXTAUTH_SECRET,
 	pages: {
 		signIn: "/auth/signin"
 	},
