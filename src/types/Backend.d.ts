@@ -24,15 +24,15 @@ declare global {
         "updatedAt": string;
     }
 
-    interface IRequest {
-        url: string;
-        method: string;
-        body?: { [key: string]: any };
-        queryParams?: any;
-        useCredentials?: boolean;
-        headers?: any;
-        nextOption?: any;
-    }
+		interface IRequest {
+			url: string;
+			method: string;
+			body?: { [key: string]: any };
+			queryParams?: any;
+			useCredentials?: boolean;
+			headers?: any;
+			nextOption?: any;
+		}
 
     interface IBackendRes<T> {
         error?: string | string[];
