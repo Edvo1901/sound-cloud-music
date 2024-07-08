@@ -37,6 +37,14 @@ export async function generateMetadata(
 	};
 }
 
+export async function generateStaticParams() {
+	return [
+		{slug: "khi-con-mo-dan-phai-664f5b2205f94dc2241189f2.html"},
+		{slug: "nu-hon-bisou-664f5b2205f94dc2241189f0.html"},
+		{slug: "tinh-co-yeu-em-664f5b2205f94dc2241189f6.html"},
+	]
+}
+
 const DetailTrackPage = async (props: any) => {
 	const { params } = props;
 
@@ -62,7 +70,7 @@ const DetailTrackPage = async (props: any) => {
 	});
 
 	if (!res.data) return notFound();
-	await new Promise(resolve => setTimeout(resolve, 3000))
+	await new Promise((resolve) => setTimeout(resolve, 3000));
 	return (
 		<Container>
 			<div>
