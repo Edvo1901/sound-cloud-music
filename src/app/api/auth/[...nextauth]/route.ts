@@ -4,17 +4,22 @@ import { JWT } from "next-auth/jwt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions: AuthOptions = {
 	secret: process.env.NEXTAUTH_SECRET,
 	pages: {
-		signIn: "/auth/signin"
+		signIn: "/auth/signin",
 	},
 	// Configure one or more authentication providers
 	providers: [
 		GithubProvider({
 			clientId: process.env.GITHUB_ID!,
 			clientSecret: process.env.GITHUB_SECRET!,
+		}),
+		GoogleProvider({
+			clientId: process.env.GOOGLE_ID!,
+			clientSecret: process.env.GOOGLE_SECRET!,
 		}),
 		CredentialsProvider({
 			// The name to display on the sign in form (e.g. "Sign in with...")
@@ -44,7 +49,7 @@ export const authOptions: AuthOptions = {
 					// Any object returned will be saved in `user` property of the JWT
 					return res.data as any;
 				} else {
-					throw new Error(res?.message as string)
+					throw new Error(res?.message as string);
 					// You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
 				}
 			},
@@ -59,7 +64,10 @@ export const authOptions: AuthOptions = {
 				const res = await sendRequest<IBackendRes<JWT>>({
 					url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/social-media`,
 					method: "POST",
-					body: { category: account?.provider.toLocaleUpperCase(), username: user.email },
+					body: {
+						category: account?.provider.toLocaleUpperCase(),
+						username: user.email,
+					},
 				});
 
 				if (res.data) {
@@ -69,10 +77,10 @@ export const authOptions: AuthOptions = {
 				}
 			}
 
-			if(
+			if (
 				trigger === "signIn" &&
 				account?.provider.toLowerCase() === "credentials"
-			){
+			) {
 				//@ts-ignore
 				token.access_token = user.access_token;
 				//@ts-ignore
