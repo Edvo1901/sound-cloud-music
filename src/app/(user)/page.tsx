@@ -3,9 +3,15 @@ import MainSlider from "@/components/main/MainSlider";
 import { sendRequest } from "@/utils/API";
 import { Container } from "@mui/material";
 import { getServerSession } from "next-auth";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Home Page | SoundCloud clone",
+	description: "Clone website",
+};
 
 export default async function HomePage() {
-	const session = await getServerSession(authOptions)
+	const session = await getServerSession(authOptions);
 	//console.log(session)
 	const chillMusic = await sendRequest<IBackendRes<ITrackTop[]>>({
 		url: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/tracks/top`,

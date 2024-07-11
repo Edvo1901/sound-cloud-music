@@ -3,6 +3,12 @@ import { sendRequest } from "@/utils/API";
 import { Container } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Your tracks',
+    description: 'description',
+}
 
 const ProfilePage = async ({ params }: { params: { slug: string } }) => {
 	const res = await sendRequest<IBackendRes<IModelPaginate<ITrackTop>>>({
